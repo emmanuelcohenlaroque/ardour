@@ -293,6 +293,7 @@ void
 VelocityGhostRegion::lollis_between (int x0, int x1, std::vector<NoteBase*>& within)
 {
 	for (auto & gev : events) {
+
 		ArdourCanvas::Lollipop* l = dynamic_cast<ArdourCanvas::Lollipop*> (gev.second->item);
 		if (l) {
 			ArdourCanvas::Duple pos = l->item_to_canvas (ArdourCanvas::Duple (l->x(), l->y0()));
