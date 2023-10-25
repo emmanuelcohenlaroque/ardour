@@ -278,11 +278,11 @@ MidiRegionView::init (bool /*wfd*/)
 	group->raise_to_top();
 
 	midi_view()->midi_track()->playback_filter().ChannelModeChanged.connect (_channel_mode_changed_connection, invalidator (*this),
-								       boost::bind (&MidiRegionView::midi_channel_mode_changed, this),
-								       gui_context ());
+	                                                                         boost::bind (&MidiRegionView::midi_channel_mode_changed, this),
+	                                                                         gui_context ());
 
 	instrument_info().Changed.connect (_instrument_changed_connection, invalidator (*this),
-					   boost::bind (&MidiRegionView::instrument_settings_changed, this), gui_context());
+	                                   boost::bind (&MidiRegionView::instrument_settings_changed, this), gui_context());
 
 	trackview.editor().SnapChanged.connect(snap_changed_connection, invalidator(*this),
 	                                       boost::bind (&MidiRegionView::snap_changed, this),
@@ -600,13 +600,13 @@ MidiRegionView::motion (GdkEventMotion* ev)
 			}
 
 		} else if (!_ghost_note && editor.current_mouse_mode() == MouseContent &&
-		    Keyboard::modifier_state_contains (ev->state, Keyboard::insert_note_modifier()) &&
-		    _mouse_state != AddDragging) {
+		           Keyboard::modifier_state_contains (ev->state, Keyboard::insert_note_modifier()) &&
+		           _mouse_state != AddDragging) {
 
 			create_ghost_note (ev->x, ev->y, ev->state);
 
 		} else if (_ghost_note && editor.current_mouse_mode() == MouseContent &&
-			   Keyboard::modifier_state_contains (ev->state, Keyboard::insert_note_modifier())) {
+		           Keyboard::modifier_state_contains (ev->state, Keyboard::insert_note_modifier())) {
 
 			update_ghost_note (ev->x, ev->y, ev->state);
 
@@ -689,7 +689,7 @@ MidiRegionView::scroll (GdkEventScroll* ev)
 	    Keyboard::modifier_state_contains (ev->state, Keyboard::TertiaryModifier)) {
 		/* XXX: bit of a hack; allow PrimaryModifier+TertiaryModifier scroll
 		 * through so that it still works for navigation and zoom.
-		*/
+		 */
 		return false;
 	}
 
@@ -734,20 +734,24 @@ MidiRegionView::scroll (GdkEventScroll* ev)
 
 	hide_verbose_cursor ();
 
-	bool fine = !Keyboard::modifier_state_contains (ev->state, Keyboard::SecondaryModifier);
-	Keyboard::ModifierMask mask_together(Keyboard::PrimaryModifier|Keyboard::TertiaryModifier);
-	bool together = Keyboard::modifier_state_contains (ev->state, mask_together);
+	if (UIConfiguration::instance().get_scroll_velocity_editing()) {
+		bool fine = !Keyboard::modifier_state_contains (ev->state, Keyboard::SecondaryModifier);
+		Keyboard::ModifierMask mask_together(Keyboard::PrimaryModifier|Keyboard::TertiaryModifier);
+		bool together = Keyboard::modifier_state_contains (ev->state, mask_together);
 
-	if (ev->direction == GDK_SCROLL_UP) {
-		change_velocities (true, fine, false, together);
-	} else if (ev->direction == GDK_SCROLL_DOWN) {
-		change_velocities (false, fine, false, together);
-	} else {
-		/* left, right: we don't use them */
-		return false;
+		if (ev->direction == GDK_SCROLL_UP) {
+			change_velocities (true, fine, false, together);
+		} else if (ev->direction == GDK_SCROLL_DOWN) {
+			change_velocities (false, fine, false, together);
+		} else {
+			/* left, right: we don't use them */
+			return false;
+		}
+
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 bool
