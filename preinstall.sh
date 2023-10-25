@@ -1,6 +1,7 @@
 #!/bin/sh
+sudo apt-get -y build-dep ardour 
 
-sudo apt install -y libglibmm-2.4-dev libsndfile1-dev libcurl4-nss-dev libarchive-dev liblo-dev libtag1-dev vamp-plugin-sdk librubberband-dev librubberband2 rubberband-cli rubberband-ladspa rubberband-vamp ibfftw3-dev
+sudo apt install -y libboost-dev libglibmm-2.4-dev libsndfile1-dev libcurl4-nss-dev libarchive-dev liblo-dev libtag1-dev vamp-plugin-sdk librubberband-dev librubberband2 rubberband-cli rubberband-ladspa rubberband-vamp ibfftw3-dev
 cd ~
 git clone https://git.aubio.org/aubio/aubio
 cd ~/aubio
